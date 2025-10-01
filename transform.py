@@ -59,7 +59,8 @@ def enviar_correo(nombre_archivo):
     yag.send(
       to=MAIL_DESTINO,
       subject="Reporte general de Terapias",
-      contents="Buenos días, se adjunta el reporte del área de Terapias. ¡Saludos!",
+      contents= """Buenos días, se adjunta el reporte semanal del área de Terapias.
+              \nSaludos,\nMariano López - Ailes Inclusión.""",
       attachments=nombre_archivo
     )
     print("Correo enviado correctamente.")
