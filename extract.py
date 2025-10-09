@@ -64,6 +64,7 @@ def extract_docs(cursor):
       AND i.alumnoinforme_anio = "2025"
     WHERE p1.prestipo_nombre_corto = 'TERAPIAS'
       AND p1.prestacion_estado_descrip = 'ACTIVA'
+      AND p1.prestacion_alumno != 522
     GROUP BY p1.prestacion_alumno
     ORDER BY alumno_completo;
   """
@@ -86,19 +87,21 @@ def extract_prest(cursor):
                     0 AS bajas
       FROM v_prestaciones
         WHERE prestipo_nombre_corto = 'TERAPIAS'
-      AND prestacion_fec_aut_OS IS NOT NULL
+        AND prestacion_fec_aut_OS IS NOT NULL
+        AND prestacion_alumno != 522
         
-        UNION ALL
+      UNION ALL
         
-        SELECT
-        YEAR(prestacion_fec_baja) AS anio,
-            MONTH(prestacion_fec_baja) AS mes,
-            0 AS altas,
-            1 AS bajas
+      SELECT
+      YEAR(prestacion_fec_baja) AS anio,
+          MONTH(prestacion_fec_baja) AS mes,
+          0 AS altas,
+          1 AS bajas
       FROM v_prestaciones
         WHERE prestipo_nombre_corto = 'TERAPIAS'
-      AND prestacion_fec_baja IS NOT NULL 
+        AND prestacion_fec_baja IS NOT NULL 
         AND prestacion_fec_aut_OS IS NOT NULL
+        AND prestacion_alumno != 522
     ) t
     WHERE 
       anio != 2023
