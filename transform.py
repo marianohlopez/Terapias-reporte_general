@@ -13,7 +13,7 @@ MAIL_DESTINO = os.getenv("MAIL_DESTINO")
 
 today = datetime.now()
 
-def export_excel(data_docs, data_prest):
+def export_excel(data_docs, data_docs_2, data_prest):
     
   # Hoja 1 - Resumen general
 
@@ -21,12 +21,12 @@ def export_excel(data_docs, data_prest):
   ws = wb.active
   ws.title = "Resumen general 2025"
 
-  headers_resumen = ["PRESTACION ID", "ALUMNO ID", "NOMBRE", "DNI", "OS", "PREST. SAIE", 
+  headers_resumen_2025 = ["PRESTACION ID", "ALUMNO ID", "NOMBRE", "DNI", "OS", "PREST. SAIE", 
                       "CRED. DNI", "CRED. OS", "CRED. CUD", "AD", "ORD. MED.", "RHC", 
                       "PLAN TR.", "PRESUP.", "OTROS", "INF. ADM.", "INF. INIC. TER.",
                       "INF. SEMEST.", "INF. FINAL"]
   
-  ws.append(headers_resumen)
+  ws.append(headers_resumen_2025)
 
   for cell in ws[1]:
       cell.font = Font(bold=True)
@@ -34,19 +34,36 @@ def export_excel(data_docs, data_prest):
   for row in data_docs:
       ws.append(row)
 
-  # Hoja 2 - Altas y bajas de prestaciones
+  # Hoja 2 - Resumen general 2026
 
-  ws2 = wb.create_sheet(title="Altas y bajas de prest.")
+  ws2 = wb.create_sheet(title="Resumen general 2026")
 
-  headers_altas_bajas = ["AÑO", "MES", "ALTAS", "BAJAS"]
+  headers_resumen_2026 = ["PRESTACION ID", "ALUMNO ID", "NOMBRE", "DNI", "OS", 
+                          "AD", "ORD. MED.", "RHC", "PLAN TR.", "PRESUP.", 
+                          "OTROS", "INF. ADM.", "INF. INIC. TER.","INF. SEMEST.", 
+                          "INF. FINAL"]
 
-  ws2.append(headers_altas_bajas)
+  ws2.append(headers_resumen_2026)
 
   for cell in ws2[1]:
       cell.font = Font(bold=True)
 
-  for row in data_prest:
+  for row in data_docs_2:
       ws2.append(row)
+
+  # Hoja 3 - Altas y bajas de prestaciones
+
+  ws3 = wb.create_sheet(title="Altas y bajas de prest.")
+
+  headers_altas_bajas = ["AÑO", "MES", "ALTAS", "BAJAS"]
+
+  ws3.append(headers_altas_bajas)
+
+  for cell in ws3[1]:
+      cell.font = Font(bold=True)
+
+  for row in data_prest:
+      ws3.append(row)
 
   nombre_archivo = f"reporte_terapias_{today.strftime('%Y-%m-%d')}.xlsx"
   wb.save(nombre_archivo)

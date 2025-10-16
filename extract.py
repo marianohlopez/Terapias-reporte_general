@@ -1,4 +1,4 @@
-def extract_docs(cursor):
+def extract_docs_2025(cursor):
   query = """ 
     SELECT 
       p1.prestacion_id,
@@ -62,6 +62,63 @@ def extract_docs(cursor):
     LEFT JOIN v_informes i 
       ON p1.prestacion_alumno = i.alumno_id
       AND i.alumnoinforme_anio = "2025"
+    WHERE p1.prestipo_nombre_corto = 'TERAPIAS'
+      AND p1.prestacion_estado_descrip = 'ACTIVA'
+      AND p1.prestacion_alumno != 522
+    GROUP BY p1.prestacion_alumno
+    ORDER BY alumno_completo;
+  """
+  cursor.execute(query)
+  return cursor.fetchall()
+
+def extract_docs_2026(cursor):
+  query = """ 
+    SELECT 
+      p1.prestacion_id,
+      p1.prestacion_alumno,
+      CONCAT(p1.alumno_apellido, ", ", p1.alumno_nombre) as alumno_completo,
+        p1.alumno_dni,
+        o.os_nombre,
+      COUNT(DISTINCT CASE WHEN d.docalumnotipo_corto = "AD" 
+        AND d.docalumnoseccion_nombre = "TERAPIAS"
+            AND d.docalumno_anio = "2026"
+        THEN d.docalumno_id END) AS ad,
+      COUNT(DISTINCT CASE WHEN d.docalumnotipo_corto = "ORDEN_MED" 
+        AND d.docalumnoseccion_nombre = "TERAPIAS"
+            AND d.docalumno_anio = "2026"
+        THEN d.docalumno_id END) AS orden_med,
+      COUNT(DISTINCT CASE WHEN d.docalumnotipo_corto = "RESUM_HIST_CLIN" 
+        AND d.docalumnoseccion_nombre = "TERAPIAS"
+            AND d.docalumno_anio = "2026"
+        THEN d.docalumno_id END) AS rhc,
+      COUNT(DISTINCT CASE WHEN d.docalumnotipo_corto = "PLAN_TRABAJO" 
+        AND d.docalumnoseccion_nombre = "TERAPIAS"
+            AND d.docalumno_anio = "2026"
+        THEN d.docalumno_id END) AS plan_tr,
+      COUNT(DISTINCT CASE WHEN d.docalumnotipo_corto = "PRESUPUESTO" 
+        AND d.docalumnoseccion_nombre = "TERAPIAS"
+            AND d.docalumno_anio = "2026"
+        THEN d.docalumno_id END) AS presup,
+      COUNT(DISTINCT CASE WHEN d.docalumnotipo_corto = "OTROS" 
+        AND d.docalumnoseccion_nombre = "TERAPIAS"
+            AND d.docalumno_anio = "2026"
+        THEN d.docalumno_id END) AS otros,
+      COUNT(DISTINCT CASE WHEN i.informecat_nombre = "Informe Inicial - ADMISIÓN" 
+        THEN i.alumnoinforme_id END) AS inf_admision,
+      COUNT(DISTINCT CASE WHEN i.informecat_nombre = "Informe Inicial - TERAPIAS" 
+        THEN i.alumnoinforme_id END) AS inf_ini_ter,
+      COUNT(DISTINCT CASE WHEN i.informecat_nombre = "⁠⁠⁠Informe Semestral - TERAPIAS" 
+        THEN i.alumnoinforme_id END) AS inf_diag_ter,
+      COUNT(DISTINCT CASE WHEN i.informecat_nombre = "⁠⁠Informe Final - TERAPIAS" 
+        THEN i.alumnoinforme_id END) AS inf_final_ter
+    FROM v_prestaciones p1
+    JOIN v_os o 
+      ON p1.prestacion_os = o.os_id
+    LEFT JOIN v_docs_alumno d
+      ON p1.prestacion_alumno = d.docalumno_alumno
+    LEFT JOIN v_informes i 
+      ON p1.prestacion_alumno = i.alumno_id
+      AND i.alumnoinforme_anio = "2026"
     WHERE p1.prestipo_nombre_corto = 'TERAPIAS'
       AND p1.prestacion_estado_descrip = 'ACTIVA'
       AND p1.prestacion_alumno != 522
